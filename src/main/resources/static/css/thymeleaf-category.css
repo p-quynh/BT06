@@ -1,0 +1,88 @@
+:root {
+    --ute-primary: #175cd3;
+    --ute-ink: #172033;
+    --ute-muted: #667085;
+    --ute-surface: #f5f7fb;
+}
+
+html,
+body {
+    min-height: 100%;
+}
+
+body {
+    background: var(--ute-surface);
+    color: var(--ute-ink);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.page-content {
+    flex: 1;
+}
+
+.eyebrow {
+    color: var(--ute-primary);
+    display: block;
+    font-size: .78rem;
+    font-weight: 800;
+    letter-spacing: .12em;
+    margin-bottom: .35rem;
+    text-transform: uppercase;
+}
+
+.student-badge {
+    align-items: center;
+    display: flex;
+    gap: .75rem;
+}
+
+.student-badge img {
+    border: 2px solid #dbe7ff;
+    border-radius: 50%;
+    height: 48px;
+    object-fit: cover;
+    width: 48px;
+}
+
+.student-badge strong,
+.student-badge small {
+    display: block;
+    line-height: 1.25;
+}
+
+.student-badge small {
+    color: var(--ute-muted);
+}
+
+.category-image {
+    border-radius: .65rem;
+    height: 68px;
+    object-fit: cover;
+    width: 68px;
+}
+
+.current-image {
+    border-radius: .85rem;
+    height: 160px;
+    object-fit: cover;
+    width: 160px;
+}
+
+.site-footer {
+    background: #101828;
+    color: #f2f4f7;
+}
+
+.site-footer small {
+    color: #98a2b3;
+}
+
+@media (max-width: 991.98px) {
+    .student-badge {
+        border-top: 1px solid #e4e7ec;
+        margin-top: .75rem;
+        padding-top: 1rem;
+    }
+}

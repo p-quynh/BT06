@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{thymeleaf/layouts/main}">
+<head>
+    <title>Quản lý danh mục</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="page-heading d-flex flex-column flex-lg-row justify-content-between align-items-lg-end gap-3 mb-4">
+        <div>
+            <span class="eyebrow">Trang quản trị</span>
+            <h1 class="mb-1">Quản lý danh mục</h1>
+            <p class="text-muted mb-0">CRUD, tìm kiếm và phân trang Category bằng Thymeleaf.</p>
+        </div>
+        <a class="btn btn-primary" th:href="@{/admin/category/add}">+ Thêm danh mục</a>
+    </div>
+
+    <div th:if="${flashMessage}"
+         class="alert"
+         th:classappend="${flashType == 'error'} ? ' alert-danger' : ' alert-success'"
+         th:text="${flashMessage}">Thông báo</div>
+
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <form class="row g-3 align-items-end" method="get" th:action="@{/admin/category}">
+                <div class="col-lg-7">
+                    <label class="form-label" for="keyword">Tên danh mục</label>
+                    <input id="keyword" class="form-control" type="search" name="keyword"
+                           th:value="${keyword}" placeholder="Nhập tên cần tìm...">
+                </div>
+                <div class="col-sm-5 col-lg-2">
+                    <label class="form-label" for="size">Số dòng</label>
+                    <select id="size" class="form-select" name="size">
+                        <option value="5" th:selected="${pageSize == 5}">5</option>
+                        <option value="10" th:selected="${pageSize == 10}">10</option>
+                        <option value="20" th:selected="${pageSize == 20}">20</option>
+                    </select>
+                </div>
+                <div class="col-sm-7 col-lg-3 d-flex gap-2">
+                    <button class="btn btn-dark flex-grow-1" type="submit">Tìm kiếm</button>
+                    <a class="btn btn-outline-secondary" th:href="@{/admin/category}">Đặt lại</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Ảnh</th>
+                    <th>Tên danh mục</th>
+                    <th class="text-end">Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="category : ${categories}">
+                    <td th:text="${category.cate_id}">1</td>
+                    <td>
+                        <img th:if="${category.icons != null and !category.icons.isBlank()}"
+                             class="category-image"
+                             th:src="@{/uploads/categories/{file}(file=${category.icons})}"
+                             th:alt="${category.cate_name}">
+                        <span th:unless="${category.icons != null and !category.icons.isBlank()}"
+                              class="text-muted">Chưa có ảnh</span>
+                    </td>
+                    <td class="fw-semibold" th:text="${category.cate_name}">Tên danh mục</td>
+                    <td>
+                        <div class="d-flex justify-content-end gap-2">
+                            <a class="btn btn-sm btn-outline-primary"
+                               th:href="@{/admin/category/edit(id=${category.cate_id})}">Sửa</a>
+                            <form method="post" th:action="@{/admin/category/delete}"
+                                  onsubmit="return confirm('Bạn chắc chắn muốn xóa danh mục này?')">
+                                <input type="hidden" name="id" th:value="${category.cate_id}">
+                                <input type="hidden" name="csrfToken" th:value="${csrfToken}">
+                                <button class="btn btn-sm btn-outline-danger" type="submit">Xóa</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                <tr th:if="${categoryPage.empty}">
+                    <td colspan="4" class="text-center text-muted py-5">
+                        Không tìm thấy danh mục phù hợp.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3 mt-4">
+        <p class="text-muted mb-0"
+           th:text="|Tổng ${categoryPage.totalElements} danh mục • Trang ${categoryPage.totalPages == 0 ? 0 : currentPage + 1}/${categoryPage.totalPages}|">
+            Thông tin phân trang
+        </p>
+        <nav th:if="${categoryPage.totalPages > 1}" aria-label="Phân trang danh mục">
+            <ul class="pagination mb-0">
+                <li class="page-item" th:classappend="${categoryPage.first} ? ' disabled'">
+                    <a class="page-link"
+                       th:href="@{/admin/category(page=${currentPage - 1},size=${pageSize},keyword=${keyword})}">Trước</a>
+                </li>
+                <li class="page-item"
+                    th:each="pageNumber : ${#numbers.sequence(0, categoryPage.totalPages - 1)}"
+                    th:classappend="${pageNumber == currentPage} ? ' active'">
+                    <a class="page-link"
+                       th:href="@{/admin/category(page=${pageNumber},size=${pageSize},keyword=${keyword})}"
+                       th:text="${pageNumber + 1}">1</a>
+                </li>
+                <li class="page-item" th:classappend="${categoryPage.last} ? ' disabled'">
+                    <a class="page-link"
+                       th:href="@{/admin/category(page=${currentPage + 1},size=${pageSize},keyword=${keyword})}">Sau</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</section>
+</body>
+</html>
